@@ -1,9 +1,24 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import { Box, Stack, Typography, Grid, TextField } from '@mui/material';
 import AddPatientBtn from './button/AddPatientBtn';
 import Image from 'next/image';
+import CommonDialog from './dialog/CommonDialog';
 
 const PatientList = () => {
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [modalType, setModalType] = useState<string>('' as string);
+
+  const handleAddPatient = () => {
+    setOpenDialog(true);
+    setModalType('add');
+  };
+
+  const handleClose = () => {
+    setOpenDialog(false);
+  };
+
   return (
     <Box p={2}>
       {/* title */}
@@ -59,12 +74,27 @@ const PatientList = () => {
           }}>
           <Stack sx={{ width: '200px' }} spacing={2}>
             <Box sx={{ border: '1px solid white' }}>
-              <AddPatientBtn>Add new patient</AddPatientBtn>
+              <AddPatientBtn onClick={handleAddPatient}>
+                Add new patient
+              </AddPatientBtn>
             </Box>
             <Box sx={{ border: '1px solid white' }}>paginate</Box>
           </Stack>
         </Grid>
       </Grid>
+
+      {openDialog && (
+        <CommonDialog
+          open={openDialog}
+          handleClose={handleClose}
+          title={modalType === 'add' ? 'Add New Patient' : 'Update Patient'}
+          content={
+            modalType === 'add'
+              ? 'Enter new patient information below'
+              : 'Enter update patient information below'
+          }
+        />
+      )}
     </Box>
   );
 };

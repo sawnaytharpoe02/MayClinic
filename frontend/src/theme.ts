@@ -1,5 +1,6 @@
 'use client';
 
+import { Padding } from '@mui/icons-material';
 import { createTheme } from '@mui/material/styles';
 
 export const theme = createTheme({
@@ -14,7 +15,7 @@ export const theme = createTheme({
       main: '#CD211D',
     },
     background: {
-      paper: '#ffffdd',
+      paper: '#fffddd',
     },
   },
   typography: {
@@ -31,6 +32,20 @@ export const theme = createTheme({
     body1: {
       fontSize: '14px',
       fontWeight: 300,
+    },
+  },
+  components: {
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          '& .MuiInputBase-root': {
+            borderRadius: '5px',
+          },
+          '.MuiInputBase-input.MuiOutlinedInput-input': {
+            padding: '8px 15px',
+          },
+        },
+      },
     },
   },
 });
