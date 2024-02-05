@@ -7,9 +7,18 @@ import {
   patientSchema,
 } from '@/lib/validations/patientSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Grid, TextField, FormLabel } from '@mui/material';
+import {
+  Grid,
+  TextField,
+  FormLabel,
+  FormControl,
+  Select,
+  MenuItem,
+  FormHelperText,
+} from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
+import { cities, status, townships, breeds } from './constants';
 
 const AddPatientForm = () => {
   const {
@@ -63,7 +72,25 @@ const AddPatientForm = () => {
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          Status
+          <FormLabel htmlFor="pawrent" sx={{ color: '#000', fontWeight: 400 }}>
+            Status
+          </FormLabel>
+          <Controller
+            name="status"
+            control={control}
+            render={({ field }) => (
+              <FormControl fullWidth error={!!errors.status}>
+                <Select id="status" labelId="status" {...field}>
+                  {status.map((status) => (
+                    <MenuItem value={status.value}>{status.key}</MenuItem>
+                  ))}
+                </Select>
+                {errors.status && (
+                  <FormHelperText>{errors.status?.message}</FormHelperText>
+                )}
+              </FormControl>
+            )}
+          />
         </Grid>
         <Grid item xs={12} md={6}>
           <FormLabel htmlFor="pawrent" sx={{ color: '#000', fontWeight: 400 }}>
@@ -84,7 +111,25 @@ const AddPatientForm = () => {
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          Breed
+          <FormLabel htmlFor="breed" sx={{ color: '#000', fontWeight: 400 }}>
+            Breed
+          </FormLabel>
+          <Controller
+            name="breed"
+            control={control}
+            render={({ field }) => (
+              <FormControl fullWidth error={!!errors.breed}>
+                <Select id="breed" labelId="breed" {...field}>
+                  {breeds.map((breed) => (
+                    <MenuItem value={breed.value}>{breed.key}</MenuItem>
+                  ))}
+                </Select>
+                {errors.status && (
+                  <FormHelperText>{errors.breed?.message}</FormHelperText>
+                )}
+              </FormControl>
+            )}
+          />
         </Grid>
         <Grid item xs={12} md={6}>
           Gender
@@ -152,10 +197,48 @@ const AddPatientForm = () => {
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          Pet Name
+          <FormLabel htmlFor="city" sx={{ color: '#000', fontWeight: 400 }}>
+            City
+          </FormLabel>
+          <Controller
+            name="city"
+            control={control}
+            render={({ field }) => (
+              <FormControl fullWidth error={!!errors.city}>
+                <Select id="city" labelId="city" {...field}>
+                  {cities.map((city) => (
+                    <MenuItem key={city.id + city.name} value={city.value}>
+                      {city.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {errors.city && (
+                  <FormHelperText>{errors.city?.message}</FormHelperText>
+                )}
+              </FormControl>
+            )}
+          />
         </Grid>
         <Grid item xs={12} md={6}>
-          Pet Name
+          <FormLabel htmlFor="township" sx={{ color: '#000', fontWeight: 400 }}>
+            Township
+          </FormLabel>
+          <Controller
+            name="township"
+            control={control}
+            render={({ field }) => (
+              <FormControl fullWidth error={!!errors.township}>
+                <Select id="township" labelId="township" {...field}>
+                  {townships.map((township) => (
+                    <MenuItem key={township.name}>{township.name}</MenuItem>
+                  ))}
+                </Select>
+                {errors.township && (
+                  <FormHelperText>{errors.township?.message}</FormHelperText>
+                )}
+              </FormControl>
+            )}
+          />
         </Grid>
       </Grid>
     </form>

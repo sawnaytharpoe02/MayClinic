@@ -1,6 +1,6 @@
 'use client';
 
-import { Padding } from '@mui/icons-material';
+import { BorderRight, Padding } from '@mui/icons-material';
 import { createTheme } from '@mui/material/styles';
 
 export const theme = createTheme({
@@ -39,10 +39,22 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           '& .MuiInputBase-root': {
-            borderRadius: '5px',
+            borderRadius: '7px',
           },
           '.MuiInputBase-input.MuiOutlinedInput-input': {
-            padding: '8px 15px',
+            padding: '7px 15px',
+          },
+        },
+      },
+    },
+    MuiSelect: {
+      styleOverrides: {
+        root: {
+          '& .MuiSelect-root': {
+            borderRadius: '7px',
+          },
+          '& .MuiSelect-select': {
+            padding: '7px 15px',
           },
         },
       },
