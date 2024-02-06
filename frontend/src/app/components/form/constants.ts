@@ -1,24 +1,34 @@
 export const status = [
-  { key: 'Allergy', value: 'allergy' },
-  { key: 'Picky Eater', value: 'picky' },
+  { id: 1, key: 'Allergy', value: 'Allergy' },
+  { id: 2, key: 'Picky Eater', value: 'Picky' },
 ];
 
 export const breeds = [
-  { key: 'Golden Retriever', value: 'Golden Retriever' },
-  { key: 'Poodle', value: 'Poodle' },
-  { key: 'Beagle', value: 'Beagle' },
-  { key: 'Bulldog', value: 'Bulldog' },
-  { key: 'Spaniel', value: 'Spaniel' },
+  { id: 1, key: 'Golden Retriever', value: 'Golden Retriever' },
+  { id: 2, key: 'Poodle', value: 'Poodle' },
+  { id: 3, key: 'Beagle', value: 'Beagle' },
+  { id: 4, key: 'Bulldog', value: 'Bulldog' },
+  { id: 5, key: 'Spaniel', value: 'Spaniel' },
 ];
 
 export const cities = [
-  { id: 1, name: 'Yangon', value: 'Yangon' },
-  { id: 2, name: 'Myaungmya', value: 'Myaungmya' },
-  { id: 3, name: 'Mandalay', value: 'Mandalay' },
-  { id: 4, name: 'NayPyiTaw', value: 'NayPyiTaw' },
+  { id: 1, key: 'Yangon', value: 'Yangon' },
+  { id: 2, key: 'Myaungmya', value: 'Myaungmya' },
+  { id: 3, key: 'Mandalay', value: 'Mandalay' },
+  { id: 4, key: 'NayPyiTaw', value: 'NayPyiTaw' },
 ];
 
 export const townships = [
+  { id: 1, key: 'Ahlon', value: 'Ahlon' },
+  { id: 2, key: 'Insein', value: 'Insein' },
+  { id: 3, key: 'Bahan', value: 'Bahan' },
+  { id: 4, key: 'Dagon', value: 'Dagon' },
+  { id: 5, key: 'Mayangone', value: 'Mayangone' },
+  { id: 6, key: 'East Dagon', value: 'East Dagon' },
+  { id: 7, key: 'Hlaing', value: 'Hlaing' },
+];
+
+export const relatedTownships = [
   // Yangon
   {
     city: { id: 1, name: 'Yangon', value: 'Yangon' },

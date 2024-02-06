@@ -8,14 +8,14 @@ export default function Home() {
     <>
       <Paper sx={{ Height: '100vh' }}>
         <Navbar />
-        <Paper sx={{ p: 2 }}>
+        <Paper sx={{ p: 2, background: '#fffddd' }}>
           <Box
             sx={{
               height: `calc(100vh - 106px)`,
               background: '#fff',
               borderRadius: '0.5rem',
             }}>
-            <PatientList/>
+            <PatientList />
           </Box>
         </Paper>
       </Paper>

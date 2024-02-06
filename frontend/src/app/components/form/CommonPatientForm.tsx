@@ -15,12 +15,19 @@ import {
   Select,
   MenuItem,
   FormHelperText,
+  RadioGroup,
+  Radio,
+  FormControlLabel,
+  Box,
+  Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import { cities, status, townships, breeds } from './constants';
+import CommonFormBtn from '../button/CommonFormBtn';
+import * as PatientApi from '@/utils/patient-api';
 
-const AddPatientForm = () => {
+const CommonPatientForm = ({ onClose }: { onClose: () => void }) => {
   const {
     control,
     handleSubmit,
@@ -41,18 +48,16 @@ const AddPatientForm = () => {
     resolver: zodResolver(patientSchema),
   });
 
-  const isWeekend = (date: Dayjs) => {
-    const day = date.day();
-    return day === 0 || day === 6;
-  };
+  const onSubmit = async (data: PatientSchemaType) => {
+    const payload = { ...data, dob: dayjs(data.dob).format('YYYY-MM-DD') };
+    const result = await PatientApi.addPatient(payload);
 
-  const onSubmit = (data: PatientSchemaType) => {
-    console.log(data);
+    onClose();
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Grid container spacing={2} mt={2}>
+      <Grid container spacing={2} mt={2} mb={3}>
         <Grid item xs={12} md={6}>
           <FormLabel htmlFor="petName" sx={{ color: '#000', fontWeight: 400 }}>
             Pet Name
@@ -71,6 +76,7 @@ const AddPatientForm = () => {
             )}
           />
         </Grid>
+
         <Grid item xs={12} md={6}>
           <FormLabel htmlFor="pawrent" sx={{ color: '#000', fontWeight: 400 }}>
             Status
@@ -82,7 +88,11 @@ const AddPatientForm = () => {
               <FormControl fullWidth error={!!errors.status}>
                 <Select id="status" labelId="status" {...field}>
                   {status.map((status) => (
-                    <MenuItem value={status.value}>{status.key}</MenuItem>
+                    <MenuItem
+                      key={`${status.id}_${status.key}`}
+                      value={status.key}>
+                      {status.value}
+                    </MenuItem>
                   ))}
                 </Select>
                 {errors.status && (
@@ -92,6 +102,7 @@ const AddPatientForm = () => {
             )}
           />
         </Grid>
+
         <Grid item xs={12} md={6}>
           <FormLabel htmlFor="pawrent" sx={{ color: '#000', fontWeight: 400 }}>
             Pawrent
@@ -110,6 +121,7 @@ const AddPatientForm = () => {
             )}
           />
         </Grid>
+
         <Grid item xs={12} md={6}>
           <FormLabel htmlFor="breed" sx={{ color: '#000', fontWeight: 400 }}>
             Breed
@@ -121,7 +133,11 @@ const AddPatientForm = () => {
               <FormControl fullWidth error={!!errors.breed}>
                 <Select id="breed" labelId="breed" {...field}>
                   {breeds.map((breed) => (
-                    <MenuItem value={breed.value}>{breed.key}</MenuItem>
+                    <MenuItem
+                      key={`${breed.id}_${breed.key}`}
+                      value={breed.key}>
+                      {breed.value}
+                    </MenuItem>
                   ))}
                 </Select>
                 {errors.status && (
@@ -131,9 +147,36 @@ const AddPatientForm = () => {
             )}
           />
         </Grid>
+
         <Grid item xs={12} md={6}>
-          Gender
+          <FormLabel htmlFor="gender" sx={{ color: '#000', fontWeight: 400 }}>
+            Gender
+          </FormLabel>
+          <Controller
+            name="gender"
+            control={control}
+            render={({ field }) => (
+              <FormControl fullWidth error={!!errors.gender}>
+                <RadioGroup row id="gender" {...field}>
+                  <FormControlLabel
+                    value="female"
+                    control={<Radio />}
+                    label="Female"
+                  />
+                  <FormControlLabel
+                    value="male"
+                    control={<Radio />}
+                    label="Male"
+                  />
+                </RadioGroup>
+                {errors.gender && (
+                  <FormHelperText>{errors.gender?.message}</FormHelperText>
+                )}
+              </FormControl>
+            )}
+          />
         </Grid>
+
         <Grid item xs={12} md={6}>
           <FormLabel htmlFor="dob" sx={{ color: '#000', fontWeight: 400 }}>
             Date of Birth
@@ -145,7 +188,6 @@ const AddPatientForm = () => {
               <DatePicker
                 {...field}
                 value={field.value ? dayjs(field.value) : null}
-                shouldDisableDate={isWeekend}
                 slotProps={{
                   textField: {
                     fullWidth: true,
@@ -160,6 +202,7 @@ const AddPatientForm = () => {
             )}
           />
         </Grid>
+
         <Grid item xs={12} md={6}>
           <FormLabel htmlFor="phone" sx={{ color: '#000', fontWeight: 400 }}>
             Contact Phone No
@@ -178,6 +221,7 @@ const AddPatientForm = () => {
             )}
           />
         </Grid>
+
         <Grid item xs={12} md={6}>
           <FormLabel htmlFor="address" sx={{ color: '#000', fontWeight: 400 }}>
             Address
@@ -196,6 +240,7 @@ const AddPatientForm = () => {
             )}
           />
         </Grid>
+
         <Grid item xs={12} md={6}>
           <FormLabel htmlFor="city" sx={{ color: '#000', fontWeight: 400 }}>
             City
@@ -207,8 +252,8 @@ const AddPatientForm = () => {
               <FormControl fullWidth error={!!errors.city}>
                 <Select id="city" labelId="city" {...field}>
                   {cities.map((city) => (
-                    <MenuItem key={city.id + city.name} value={city.value}>
-                      {city.name}
+                    <MenuItem key={`${city.id}_${city.key}`} value={city.key}>
+                      {city.value}
                     </MenuItem>
                   ))}
                 </Select>
@@ -219,6 +264,7 @@ const AddPatientForm = () => {
             )}
           />
         </Grid>
+
         <Grid item xs={12} md={6}>
           <FormLabel htmlFor="township" sx={{ color: '#000', fontWeight: 400 }}>
             Township
@@ -230,7 +276,11 @@ const AddPatientForm = () => {
               <FormControl fullWidth error={!!errors.township}>
                 <Select id="township" labelId="township" {...field}>
                   {townships.map((township) => (
-                    <MenuItem key={township.name}>{township.name}</MenuItem>
+                    <MenuItem
+                      key={`${township.id}_${township.key}`}
+                      value={township.key}>
+                      {township.value}
+                    </MenuItem>
                   ))}
                 </Select>
                 {errors.township && (
@@ -241,8 +291,19 @@ const AddPatientForm = () => {
           />
         </Grid>
       </Grid>
+
+      <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
+        <CommonFormBtn variant="contained" type="submit">
+          <Typography color="#fff">Save</Typography>
+        </CommonFormBtn>
+        <CommonFormBtn variant="outlined">
+          <Typography color="#000" onClick={onClose}>
+            Cancel
+          </Typography>
+        </CommonFormBtn>
+      </Box>
     </form>
   );
 };
 
-export default AddPatientForm;
+export default CommonPatientForm;

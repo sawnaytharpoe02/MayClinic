@@ -9,7 +9,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import { Box, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import AddPatientForm from '../form/AddPatientForm';
+import AddPatientForm from '../form/CommonPatientForm';
 
 const CommonDialog = ({
   open,
@@ -39,12 +39,8 @@ const CommonDialog = ({
             {content}
           </DialogContentText>
           {/* Form */}
-          <AddPatientForm />
+          <AddPatientForm onClose={handleClose}/>
         </DialogContent>
-        <DialogActions sx={{ justifyContent: 'center', p: 4 }}>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button type="submit">Submit</Button>
-        </DialogActions>
       </Dialog>
     </>
   );

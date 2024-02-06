@@ -9,43 +9,14 @@ export const AllSchema = {
 };
 
 export const PatientSchema = Joi.object({
-  petName: Joi.string().required(),
-  status: Joi.string().required().messages({
-    'string.base': 'Status must be a string',
-    'any.required': 'Status is required',
-  }),
-  pawrent: Joi.string().required().messages({
-    'string.base': 'Pawrent must be a string',
-    'any.required': 'Pawrent is required',
-  }),
-  breed: Joi.string().required().messages({
-    'string.base': 'Breed must be a string',
-    'any.required': 'Breed is required',
-  }),
-  gender: Joi.string().required().messages({
-    'string.base': 'Gender must be a string',
-    'any.required': 'Gender is required',
-  }),
-  dob: Joi.string().required().messages({
-    'string.base': 'Date of birth must be a string',
-    'any.required': 'Date of birth is required',
-  }),
-  phone: Joi.string().required().min(6).max(11).messages({
-    'string.base': 'Phone must be a string',
-    'any.required': 'Phone is required',
-    'string.min': 'Phone must be at least {#limit} characters long',
-    'string.max': 'Phone must be at most {#limit} characters long',
-  }),
-  address: Joi.string().required().messages({
-    'string.base': 'Address must be a string',
-    'any.required': 'Address is required',
-  }),
-  city: Joi.string().required().messages({
-    'string.base': 'City must be a string',
-    'any.required': 'City is required',
-  }),
-  township: Joi.string().required().messages({
-    'string.base': 'Township must be a string',
-    'any.required': 'Township is required',
-  }),
+  petName: Joi.string().min(2).required(),
+  status: Joi.string().required(),
+  pawrent: Joi.string().required(),
+  breed: Joi.string().required(),
+  gender: Joi.string().required(),
+  dob: Joi.string().optional(),
+  phone: Joi.string().required().min(6).max(11),
+  address: Joi.string().required(),
+  city: Joi.string().required(),
+  township: Joi.string().required(),
 });

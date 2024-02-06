@@ -1,6 +1,6 @@
 'use client';
 
-import { BorderRight, Padding } from '@mui/icons-material';
+import { BorderColor } from '@mui/icons-material';
 import { createTheme } from '@mui/material/styles';
 
 export const theme = createTheme({
@@ -13,9 +13,6 @@ export const theme = createTheme({
     },
     error: {
       main: '#CD211D',
-    },
-    background: {
-      paper: '#fffddd',
     },
   },
   typography: {
@@ -38,11 +35,11 @@ export const theme = createTheme({
     MuiTextField: {
       styleOverrides: {
         root: {
-          '& .MuiInputBase-root': {
-            borderRadius: '7px',
-          },
           '.MuiInputBase-input.MuiOutlinedInput-input': {
             padding: '7px 15px',
+          },
+          '.MuiOutlinedInput-notchedOutline': {
+            borderColor: '#54bab9',
           },
         },
       },
@@ -50,11 +47,12 @@ export const theme = createTheme({
     MuiSelect: {
       styleOverrides: {
         root: {
-          '& .MuiSelect-root': {
-            borderRadius: '7px',
-          },
           '& .MuiSelect-select': {
             padding: '7px 15px',
+            BorderColor: '#54bab9',
+          },
+          '.MuiOutlinedInput-notchedOutline': {
+            borderColor: '#54bab9',
           },
         },
       },
