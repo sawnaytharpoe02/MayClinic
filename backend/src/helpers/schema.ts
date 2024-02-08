@@ -9,7 +9,7 @@ export const AllSchema = {
 };
 
 export const PatientSchema = Joi.object({
-  petName: Joi.string().min(2).required(),
+  petName: Joi.string().min(2),
   status: Joi.string().required(),
   pawrent: Joi.string().required(),
   breed: Joi.string().required(),

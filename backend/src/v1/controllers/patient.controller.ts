@@ -1,5 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
-import { getAllPatientsService, getOnePatientService, createPatientService } from '../services/patient.services';
+import {
+  getAllPatientsService,
+  getOnePatientService,
+  createPatientService,
+  updatePatientService,
+  deletePatientService,
+} from '../services/patient.services';
 
 const getAllPatients = async (
   req: Request,
@@ -25,4 +31,26 @@ const createPatient = async (
   return createPatientService(req, res, next);
 };
 
-export { getAllPatients, getOnePatient, createPatient };
+const updatePatient = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  return updatePatientService(req, res, next);
+};
+
+const deletePatient = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  return deletePatientService(req, res, next);
+};
+
+export {
+  getAllPatients,
+  getOnePatient,
+  createPatient,
+  updatePatient,
+  deletePatient,
+};

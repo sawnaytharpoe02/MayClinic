@@ -9,7 +9,7 @@ const CommonFormBtn = (props: any) => {
     width: '140px',
     textTransform: 'none',
     fontSize: 14,
-    padding: '5px 30px',
+    padding: '4px 25px',
     borderRadius: '0.3rem',
   });
 

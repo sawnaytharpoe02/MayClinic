@@ -86,4 +86,69 @@ const createPatientService = async (
   }
 };
 
-export { getAllPatientsService, getOnePatientService, createPatientService };
+const updatePatientService = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const patient: IPatient | null = await Patient.findById(req.params.id);
+
+    if (patient) {
+      const updatedPatient = await Patient.findByIdAndUpdate(patient._id, req.body, { new: true });
+
+      resMessage(
+        res,
+        HTTP_STATUS_CODES.OK,
+        'OK',
+        'Patient updated successfully.',
+        updatedPatient
+      );
+    }else{
+      resMessage(
+        res,
+        HTTP_STATUS_CODES.NOT_FOUND,
+        'NOT_FOUND',
+        'Patient not found.',
+        null
+      );
+    }
+  } catch (err: any) {
+    next(new Error(`Error: ${err}`));
+  }
+};
+
+const deletePatientService = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const patient: IPatient | null = await Patient.findById(req.params.id);
+
+    if (patient) {
+      await Patient.findByIdAndDelete(patient._id);
+      resMessage(
+        res,
+        HTTP_STATUS_CODES.OK,
+        'OK',
+        'Patient deleted successfully.',
+        null
+      );
+    } else {
+      resMessage(
+        res,
+        HTTP_STATUS_CODES.NOT_FOUND,
+        'NOT_FOUND',
+        'Patient not found.',
+        null
+      );
+    }
+  } catch (err: any) {
+    next(new Error(`Error: ${err}`));
+  }
+}
+
+export {
+  getAllPatientsService,
+  getOnePatientService,
+  createPatientService,
+  updatePatientService,
+  deletePatientService
+};

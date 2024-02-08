@@ -18,7 +18,11 @@ export const patientSchema = z.object({
     .nonempty('pawrent name is required')
     .min(2, { message: 'pawrent name has to be at least 2 characters' }),
   breed: z.string().nonempty('breed is required'),
-  dob: z.date().nullable(),
+  dob: z.date({
+    errorMap: () => {
+      return { message: 'You have to select a date' };
+    }
+  }).nullable(),
   phone: z
     .string()
     .regex(/^[0-9]+$/, { message: 'phone number has to be a number' })

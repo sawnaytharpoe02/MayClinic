@@ -1,14 +1,11 @@
-export interface IPatientList {
-  data: { _id: string }[];
-}
-
 export interface IPatient {
+  _id?:string;
   petName: string;
   status: string;
+  gender: string;
   pawrent: string;
   breed: string;
-  gender: string;
-  dob: string;
+  dob: string | null;
   phone: string;
   address: string;
   city: string;

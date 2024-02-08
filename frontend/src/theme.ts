@@ -36,7 +36,7 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           '.MuiInputBase-input.MuiOutlinedInput-input': {
-            padding: '7px 15px',
+            padding: '4px 15px',
           },
           '.MuiOutlinedInput-notchedOutline': {
             borderColor: '#54bab9',
@@ -48,7 +48,7 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           '& .MuiSelect-select': {
-            padding: '7px 15px',
+            padding: '4px 15px',
             BorderColor: '#54bab9',
           },
           '.MuiOutlinedInput-notchedOutline': {

@@ -3,6 +3,8 @@ import {
   getAllPatients,
   getOnePatient,
   createPatient,
+  updatePatient,
+  deletePatient,
 } from '../controllers/patient.controller';
 import {
   validateParamsId,
@@ -16,6 +18,10 @@ router
   .get(getAllPatients)
   .post([validateReqBodyPatient, createPatient]);
 
-router.route('/:id').get([validateParamsId, getOnePatient]);
+router
+  .route('/:id')
+  .get([validateParamsId, getOnePatient])
+  .put([validateParamsId, updatePatient])
+  .delete([validateParamsId, deletePatient]);
 
 export default router;
