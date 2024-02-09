@@ -228,12 +228,12 @@ const CommonPatientForm = ({
                   <RadioGroup row id="gender" {...field}>
                     <FormControlLabel
                       value="female"
-                      control={<Radio />}
+                      control={<Radio size='small'/>}
                       label="Female"
                     />
                     <FormControlLabel
                       value="male"
-                      control={<Radio />}
+                      control={<Radio size='small'/>}
                       label="Male"
                     />
                   </RadioGroup>

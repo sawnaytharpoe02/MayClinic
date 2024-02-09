@@ -3,24 +3,9 @@ import { IPatient } from '@/models/Patient';
 
 export const patientUrlEndPoint = '/patients';
 
-// export const getPatient = async (id: string) => {
-//   const response = await api.get(`/patients/${id}`);
-//   return response.data;
-// };
-
-// export const getPatientsList = async () => {
-//   const response = await api.get<IPatientList>('/patients');
-//   return response.data?.data;
-// };
-
-// export const addPatient = async (patient: IPatient) => {
-//   const response = await api.post<IPatient>('/patients', patient);
-//   return response.data;
-// }
-
 export const getPatients = async () => {
-  const response = await api.get(patientUrlEndPoint);
-  return response.data;
+  const res = await api.get(patientUrlEndPoint);
+  return res.data;
 };
 
 export const getPatient = async (id: string) => {
@@ -40,7 +25,6 @@ export const addPatient = async ({
   city,
   township,
 }: IPatient) => {
-  // if (Math.random() < 0.5) throw new Error('Failed to add new item!');
   const response = await api.post(patientUrlEndPoint, {
     petName,
     status,

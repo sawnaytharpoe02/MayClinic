@@ -8,7 +8,7 @@ export default function Home() {
     <>
       <Paper sx={{ Height: '100vh' }}>
         <Navbar />
-        <Paper sx={{ p: 2, background: '#fffddd' }}>
+        <Paper sx={{ p: 2, background: '#ECEBCE' }}>
           <Box
             sx={{
               height: `calc(100vh - 106px)`,

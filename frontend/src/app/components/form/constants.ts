@@ -1,6 +1,6 @@
 export const status = [
   { id: 1, key: 'Allergy', value: 'Allergy' },
-  { id: 2, key: 'Picky Eater', value: 'Picky' },
+  { id: 2, key: 'Picky Eater', value: 'Picky Eater' },
 ];
 
 export const breeds = [
