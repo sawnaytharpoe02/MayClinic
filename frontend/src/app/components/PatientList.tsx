@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Stack,
@@ -24,8 +24,8 @@ import {
   deletePatient,
 } from '@/utils/patient-api';
 import CommonPatientForm from './form/CommonPatientForm';
-import { IPatient } from '@/models/Patient';
-import { status, breeds } from './form/constants';
+import { IPatientResProps } from '@/utils/interface';
+import { status, breeds } from './form/options';
 
 const PatientList = () => {
   const { data: patients, isLoading, mutate } = useSWR(cacheKey, getPatients);
@@ -51,7 +51,7 @@ const PatientList = () => {
     setAnchorEl(event.currentTarget);
     setSelectedData(
       patients?.data?.filter(
-        (patient: any) => patient._id === event.currentTarget.id
+        (patient: IPatientResProps) => patient._id === event.currentTarget.id
       )[0]
     );
   };
@@ -72,7 +72,7 @@ const PatientList = () => {
   };
 
   const handleDeletePatient = async () => {
-    await deletePatient({ id: (selectedData as PatientProps)?._id });
+    await deletePatient({ id: (selectedData as IPatientResProps)?._id });
     mutate();
     handleClose();
   };
@@ -81,21 +81,11 @@ const PatientList = () => {
     setOpenDialog(false);
   };
 
-  interface PatientProps {
-    _id: string;
-    petName: string;
-    status: string;
-    pawrent: string;
-    breed: string;
-    gender: string;
-    dob: string | number | Date | dayjs.Dayjs | null | undefined;
-    phone: string;
-    address: string;
-  }
 
-  const handleMutationProcess = (data: IPatient) => {
+
+  const handleMutationProcess = (data: IPatientResProps) => {
     patients?.data?.filter(
-      (patient: PatientProps) => patient._id === data._id
+      (patient: IPatientResProps) => patient._id === data._id
     ) && mutate();
   };
 
@@ -247,21 +237,21 @@ const PatientList = () => {
   const filteredPatients =
     patients?.data
       ?.filter(
-        (pet: PatientProps) =>
+        (pet: IPatientResProps) =>
           selectedStatus === null ||
           pet.status.toLowerCase() === selectedStatus.value.toLowerCase().trim()
       )
       .filter(
-        (pet: PatientProps) =>
+        (pet: IPatientResProps) =>
           selectedBreed === null || pet.breed === selectedBreed.value
       )
       .filter(
-        (pet: PatientProps) =>
+        (pet: IPatientResProps) =>
           pet.petName.toLowerCase().includes(searchTerm.toLowerCase().trim()) ||
           pet.pawrent.toLowerCase().includes(searchTerm.toLowerCase().trim()) ||
           pet.phone.toLowerCase().includes(searchTerm.toLowerCase().trim())
       )
-      .map((pet: PatientProps, index: number) => ({
+      .map((pet: IPatientResProps, index: number) => ({
         rowId: index + 1,
         id: pet._id,
         petName: pet.petName,
@@ -470,7 +460,7 @@ const PatientList = () => {
           }>
           <CommonPatientForm
             onClose={handleCloseDialog}
-            selectedData={selectedData}
+            selectedData={selectedData as IPatientResProps}
             handleMutationProcess={handleMutationProcess}
             modalType={modalType}
           />

@@ -1,5 +1,5 @@
 import api from './axiosInstance';
-import { IPatient } from '@/models/Patient';
+import { IPatient } from '@/utils/interface';
 
 export const patientUrlEndPoint = '/patients';
 

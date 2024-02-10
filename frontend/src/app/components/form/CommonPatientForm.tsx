@@ -23,9 +23,9 @@ import {
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
-import { cities, status, townships, breeds } from './constants';
+import { cities, status, townships, breeds } from './options';
 import CommonFormBtn from '../button/CommonFormBtn';
-import { IPatient } from '@/models/Patient';
+import { IPatientProps, IPatientResProps } from '@/utils/interface';
 import { addPatient, updatePatient } from '@/utils/patient-api';
 
 const CommonPatientForm = ({
@@ -35,9 +35,9 @@ const CommonPatientForm = ({
   selectedData,
 }: {
   onClose: () => void;
-  handleMutationProcess: (data: IPatient) => void;
+  handleMutationProcess: (data: IPatientResProps) => void;
   modalType: string;
-  selectedData: any;
+  selectedData: IPatientResProps | null;
 }) => {
   const {
     control,
@@ -62,7 +62,7 @@ const CommonPatientForm = ({
 
   const onSubmit = async (data: PatientSchemaType) => {
     try {
-      const payload: IPatient = {
+      const payload: IPatientProps = {
         petName: data.petName,
         status: data.status,
         gender: data.gender,
@@ -75,7 +75,7 @@ const CommonPatientForm = ({
         township: data.township,
       };
 
-      if (selectedData._id) {
+      if (selectedData && selectedData._id) {
         const res = await updatePatient(selectedData._id, { ...payload });
         handleMutationProcess(res.data);
       } else {
@@ -228,12 +228,12 @@ const CommonPatientForm = ({
                   <RadioGroup row id="gender" {...field}>
                     <FormControlLabel
                       value="female"
-                      control={<Radio size='small'/>}
+                      control={<Radio size="small" />}
                       label="Female"
                     />
                     <FormControlLabel
                       value="male"
-                      control={<Radio size='small'/>}
+                      control={<Radio size="small" />}
                       label="Male"
                     />
                   </RadioGroup>
