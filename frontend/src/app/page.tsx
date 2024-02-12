@@ -2,6 +2,9 @@ import React from 'react';
 import { Paper, Box } from '@mui/material';
 import Navbar from '@/app/components/Navbar';
 import PatientList from './components/PatientList';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import './globals.css';
 
 export default function Home() {
   return (
@@ -16,6 +19,15 @@ export default function Home() {
               borderRadius: '0.5rem',
             }}>
             <PatientList />
+            <ToastContainer
+              icon={false}
+              closeOnClick
+              pauseOnHover
+              position="bottom-left"
+              theme="colored"
+              limit={1}
+              autoClose={2000}
+            />
           </Box>
         </Paper>
       </Paper>

@@ -27,6 +27,7 @@ import { cities, status, townships, breeds } from './options';
 import CommonFormBtn from '../button/CommonFormBtn';
 import { IPatientProps, IPatientResProps } from '@/utils/interface';
 import { addPatient, updatePatient } from '@/utils/patient-api';
+import { toast } from 'react-toastify';
 
 const CommonPatientForm = ({
   onClose,
@@ -78,9 +79,29 @@ const CommonPatientForm = ({
       if (selectedData && selectedData._id) {
         const res = await updatePatient(selectedData._id, { ...payload });
         handleMutationProcess(res.data);
+        toast.success('Patient is successfully updated!', {
+          icon: () => (
+            <img
+              src="/resources/success.png"
+              width={20}
+              height={20}
+              alt="updated"
+            />
+          ),
+        });
       } else {
         const res = await addPatient(payload);
         handleMutationProcess(res.data);
+        toast.success('Patient is successfully created!', {
+          icon: () => (
+            <img
+              src="/resources/success.png"
+              width={20}
+              height={20}
+              alt="created"
+            />
+          ),
+        });
       }
     } catch (err: any) {
       alert(err.message);
@@ -375,13 +396,16 @@ const CommonPatientForm = ({
       </Grid>
 
       <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
-        <CommonFormBtn variant="contained" type="submit">
-          <Typography color="#fff">Save</Typography>
-        </CommonFormBtn>
-        <CommonFormBtn variant="outlined">
-          <Typography color="#000" onClick={onClose}>
-            Cancel
+        <CommonFormBtn
+          variant="contained"
+          type="submit"
+          color={modalType !== 'edit' ? 'primary' : 'secondary'}>
+          <Typography color="#fff">
+            {modalType !== 'edit' ? 'Save' : 'Update'}
           </Typography>
+        </CommonFormBtn>
+        <CommonFormBtn variant="outlined" onClick={onClose}>
+          <Typography color="#000">Cancel</Typography>
         </CommonFormBtn>
       </Box>
     </form>

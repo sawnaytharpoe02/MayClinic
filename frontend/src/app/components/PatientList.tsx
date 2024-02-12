@@ -26,10 +26,19 @@ import {
 import CommonPatientForm from './form/CommonPatientForm';
 import { IPatientResProps } from '@/utils/interface';
 import { status, breeds } from './form/options';
+import ConfirmDeleteDialog from './dialog/ConfirmDeleteDialog';
+import { toast } from 'react-toastify';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const PatientList = () => {
-  const { data: patients, isLoading, mutate } = useSWR(cacheKey, getPatients);
+  const {
+    data: patients,
+    isLoading: patientLoading,
+    mutate,
+  } = useSWR(cacheKey, getPatients);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [confirmDeleteDialog, setConfirmDeleteDialog] =
+    useState<boolean>(false);
   const [modalType, setModalType] = useState<string>('' as string);
   const [selectedData, setSelectedData] = useState({});
   const [selectedStatus, setSelectedStatus] = useState<{
@@ -75,13 +84,17 @@ const PatientList = () => {
     await deletePatient({ id: (selectedData as IPatientResProps)?._id });
     mutate();
     handleClose();
+    toast.success('Patient is successfully deleted!', {
+      icon: () => (
+        <img
+          src="/resources/success.png"
+          width={20}
+          height={20}
+          alt="updated"
+        />
+      ),
+    });
   };
-
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-  };
-
-
 
   const handleMutationProcess = (data: IPatientResProps) => {
     patients?.data?.filter(
@@ -215,7 +228,11 @@ const PatientList = () => {
                     Edit
                   </Typography>
                 </MenuItem>
-                <MenuItem onClick={handleDeletePatient}>
+                <MenuItem
+                  onClick={() => {
+                    setConfirmDeleteDialog(true);
+                    handleClose();
+                  }}>
                   <Image
                     src="/resources/delete.png"
                     alt="delete icon"
@@ -392,8 +409,17 @@ const PatientList = () => {
 
       {/* Data Table */}
       <div style={{ height: 365, width: '100%' }}>
-        {isLoading ? (
-          <div>loading ny dl...</div>
+        {patientLoading ? (
+          <Box
+            sx={{
+              width: '100%',
+              height: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <CircularProgress color="primary" />
+          </Box>
         ) : (
           <DataGrid
             rows={filteredPatients}
@@ -451,7 +477,7 @@ const PatientList = () => {
       {openDialog && (
         <CommonDialog
           open={openDialog}
-          handleClose={handleCloseDialog}
+          handleClose={() => setOpenDialog(false)}
           title={modalType === 'add' ? 'Add New Patient' : 'Update Patient'}
           content={
             modalType === 'add'
@@ -459,12 +485,22 @@ const PatientList = () => {
               : 'Enter update patient information below'
           }>
           <CommonPatientForm
-            onClose={handleCloseDialog}
+            onClose={() => setOpenDialog(false)}
             selectedData={selectedData as IPatientResProps}
             handleMutationProcess={handleMutationProcess}
             modalType={modalType}
           />
         </CommonDialog>
+      )}
+
+      {confirmDeleteDialog && (
+        <ConfirmDeleteDialog
+          open={confirmDeleteDialog}
+          handleClose={() => setConfirmDeleteDialog(false)}
+          title="Confirmation"
+          content="Are you sure you want to delete this patient?"
+          handleDeleteProcess={handleDeletePatient}
+        />
       )}
     </Box>
   );
