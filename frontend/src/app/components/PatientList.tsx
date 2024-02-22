@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
+import React, { useState, useDeferredValue, useEffect, useMemo } from "react";
 import {
   Box,
   Stack,
@@ -11,35 +11,60 @@ import {
   Menu,
   MenuItem,
   Autocomplete,
-} from '@mui/material';
-import AddPatientBtn from './button/AddPatientBtn';
-import Image from 'next/image';
-import CommonDialog from './dialog/CommonDialog';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import useSWR from 'swr';
-import dayjs from 'dayjs';
+} from "@mui/material";
+import AddPatientBtn from "./button/AddPatientBtn";
+import Image from "next/image";
+import CommonDialog from "./dialog/CommonDialog";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import useSWR from "swr";
+import dayjs from "dayjs";
+import api from "../../utils/axiosInstance";
 import {
-  getPatients,
   patientUrlEndPoint as cacheKey,
   deletePatient,
-} from '@/utils/patient-api';
-import CommonPatientForm from './form/CommonPatientForm';
-import { IPatientResProps } from '@/utils/interface';
-import { status, breeds } from './form/options';
-import ConfirmDeleteDialog from './dialog/ConfirmDeleteDialog';
-import { toast } from 'react-toastify';
-import CircularProgress from '@mui/material/CircularProgress';
+} from "@/utils/patient-api";
+import CommonPatientForm from "./form/CommonPatientForm";
+import { IPatientResProps } from "@/utils/interface";
+import { status, breeds } from "./form/options";
+import ConfirmDeleteDialog from "./dialog/ConfirmDeleteDialog";
+import { toast } from "react-toastify";
+import CircularProgress from "@mui/material/CircularProgress";
+import { patientSchema } from "@/lib/validations/patientSchema";
 
 const PatientList = () => {
   const {
     data: patients,
     isLoading: patientLoading,
     mutate,
-  } = useSWR(cacheKey, getPatients);
+  } = useSWR(cacheKey, () => {
+    return new Promise<IPatientResProps[]>(async (resolve, reject) => {
+      try {
+        const res = await api.get(cacheKey);
+        const formattedResData = res.data?.data?.map(
+          (pet: IPatientResProps, i: number) => ({
+            rowId: i + 1,
+            id: pet._id,
+            petName: pet.petName,
+            status: pet.status,
+            pawrent: pet.pawrent,
+            breed: pet.breed,
+            gender: pet.gender,
+            dob: dayjs(pet.dob).format("DD-MM-YYYY"),
+            phone: pet.phone,
+            address: pet.address,
+          })
+        );
+
+        return resolve(formattedResData);
+      } catch (err) {
+        return reject(err);
+      }
+    });
+  });
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [confirmDeleteDialog, setConfirmDeleteDialog] =
     useState<boolean>(false);
-  const [modalType, setModalType] = useState<string>('' as string);
+  const [modalType, setModalType] = useState<string>("" as string);
   const [selectedData, setSelectedData] = useState({});
   const [selectedStatus, setSelectedStatus] = useState<{
     id: number;
@@ -51,7 +76,8 @@ const PatientList = () => {
     key: string;
     value: string;
   } | null>(null);
-  const [searchTerm, setSearchTerm] = useState<string>('' as string);
+  const [searchTerm, setSearchTerm] = useState<string>("" as string);
+  const deferredSearchTerm = useDeferredValue<string>(searchTerm);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -59,7 +85,7 @@ const PatientList = () => {
     event.stopPropagation();
     setAnchorEl(event.currentTarget);
     setSelectedData(
-      patients?.data?.filter(
+      (patients || []).filter(
         (patient: IPatientResProps) => patient._id === event.currentTarget.id
       )[0]
     );
@@ -71,12 +97,12 @@ const PatientList = () => {
 
   const handleAddPatient = () => {
     setOpenDialog(true);
-    setModalType('add');
+    setModalType("add");
   };
 
   const handleEditPatient = () => {
     setOpenDialog(true);
-    setModalType('edit');
+    setModalType("edit");
     handleClose();
   };
 
@@ -84,7 +110,7 @@ const PatientList = () => {
     await deletePatient({ id: (selectedData as IPatientResProps)?._id });
     mutate();
     handleClose();
-    toast.success('Patient is successfully deleted!', {
+    toast.success("Patient is successfully deleted!", {
       icon: () => (
         <img
           src="/resources/success.png"
@@ -97,33 +123,32 @@ const PatientList = () => {
   };
 
   const handleMutationProcess = (data: IPatientResProps) => {
-    patients?.data?.filter(
-      (patient: IPatientResProps) => patient._id === data._id
-    ) && mutate();
+    patients?.filter((patient: IPatientResProps) => patient._id === data._id) &&
+      mutate();
   };
 
   const columns: GridColDef[] = [
     {
-      field: 'rowId',
-      headerName: 'ID',
+      field: "rowId",
+      headerName: "ID",
       flex: 1,
       disableColumnMenu: true,
-      headerAlign: 'center',
-      align: 'center',
+      headerAlign: "center",
+      align: "center",
       sortable: false,
     },
     {
-      field: 'petName',
-      headerName: 'Pet Name',
+      field: "petName",
+      headerName: "Pet Name",
       flex: 2,
       disableColumnMenu: true,
       sortable: false,
     },
     {
-      field: 'status',
-      headerName: 'Status',
-      headerAlign: 'center',
-      align: 'center',
+      field: "status",
+      headerName: "Status",
+      headerAlign: "center",
+      align: "center",
       flex: 2,
       disableColumnMenu: true,
       sortable: false,
@@ -131,9 +156,9 @@ const PatientList = () => {
         return (
           <Image
             src={`/resources/${
-              params.row.status.toLowerCase() === 'allergy'
-                ? 'allergy'
-                : 'picky_eater'
+              params.row.status.toLowerCase() === "allergy"
+                ? "allergy"
+                : "picky_eater"
             }.png`}
             alt={params.row.status}
             width={14}
@@ -143,43 +168,43 @@ const PatientList = () => {
       },
     },
     {
-      field: 'pawrent',
-      headerName: 'Pawrent',
+      field: "pawrent",
+      headerName: "Pawrent",
       flex: 3,
       disableColumnMenu: true,
       sortable: false,
     },
     {
-      field: 'breed',
-      headerName: 'Breed',
+      field: "breed",
+      headerName: "Breed",
       flex: 2,
       disableColumnMenu: true,
       sortable: false,
     },
     {
-      field: 'dob',
-      headerName: 'Date of Birth',
+      field: "dob",
+      headerName: "Date of Birth",
       flex: 2,
       disableColumnMenu: true,
       sortable: false,
     },
     {
-      field: 'phone',
-      headerName: 'Contact Phone No.',
+      field: "phone",
+      headerName: "Contact Phone No.",
       flex: 3,
       disableColumnMenu: true,
       sortable: false,
     },
     {
-      field: 'address',
-      headerName: 'Address',
+      field: "address",
+      headerName: "Address",
       flex: 3,
       disableColumnMenu: true,
       sortable: false,
     },
     {
-      field: 'actions',
-      headerName: '',
+      field: "actions",
+      headerName: "",
       sortable: false,
       flex: 1,
       disableColumnMenu: true,
@@ -192,7 +217,7 @@ const PatientList = () => {
                 aria-label="more"
                 id={row?.id}
                 aria-controls={open ? row?.id : undefined}
-                aria-expanded={open ? 'true' : undefined}
+                aria-expanded={open ? "true" : undefined}
                 aria-haspopup="true"
                 onClick={handleClickActions}>
                 <Image
@@ -205,7 +230,7 @@ const PatientList = () => {
               <Menu
                 id={row?.id}
                 MenuListProps={{
-                  'aria-labelledby': 'long-button',
+                  "aria-labelledby": "long-button",
                 }}
                 anchorEl={anchorEl}
                 open={open}
@@ -213,8 +238,8 @@ const PatientList = () => {
                 PaperProps={{
                   style: {
                     maxHeight: 30 * 4.5,
-                    width: '15ch',
-                    boxShadow: '0px 2px 4px 0px rgba(0, 0, 0, 0.075)',
+                    width: "15ch",
+                    boxShadow: "0px 2px 4px 0px rgba(0, 0, 0, 0.075)",
                   },
                 }}>
                 <MenuItem onClick={handleEditPatient}>
@@ -252,8 +277,7 @@ const PatientList = () => {
   ];
 
   const filteredPatients =
-    patients?.data
-      ?.filter(
+    patients?.filter(
         (pet: IPatientResProps) =>
           selectedStatus === null ||
           pet.status.toLowerCase() === selectedStatus.value.toLowerCase().trim()
@@ -264,22 +288,10 @@ const PatientList = () => {
       )
       .filter(
         (pet: IPatientResProps) =>
-          pet.petName.toLowerCase().includes(searchTerm.toLowerCase().trim()) ||
-          pet.pawrent.toLowerCase().includes(searchTerm.toLowerCase().trim()) ||
-          pet.phone.toLowerCase().includes(searchTerm.toLowerCase().trim())
-      )
-      .map((pet: IPatientResProps, index: number) => ({
-        rowId: index + 1,
-        id: pet._id,
-        petName: pet.petName,
-        status: pet.status,
-        pawrent: pet.pawrent,
-        breed: pet.breed,
-        gender: pet.gender,
-        dob: dayjs(pet.dob).format('DD-MM-YYYY'),
-        phone: pet.phone,
-        address: pet.address,
-      })) || [];
+          pet.petName.toLowerCase().includes(deferredSearchTerm.toLowerCase().trim()) ||
+          pet.pawrent.toLowerCase().includes(deferredSearchTerm.toLowerCase().trim()) ||
+          pet.phone.toLowerCase().includes(deferredSearchTerm.toLowerCase().trim())
+      ) || [];
 
   return (
     <Box>
@@ -292,7 +304,7 @@ const PatientList = () => {
         <Grid container mt={1}>
           {/* left side block */}
           <Grid item xs={12} sm={6} sx={{ mb: 2 }}>
-            <Stack sx={{ maxWidth: '280px' }} spacing={2}>
+            <Stack sx={{ maxWidth: "280px" }} spacing={2}>
               <Box>
                 {/* Input Search Field */}
                 <TextField
@@ -300,13 +312,13 @@ const PatientList = () => {
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="search patient"
                   sx={{
-                    width: '100%',
-                    '.MuiInputBase-root.MuiOutlinedInput-root': {
-                      borderRadius: '0.6rem',
+                    width: "100%",
+                    ".MuiInputBase-root.MuiOutlinedInput-root": {
+                      borderRadius: "0.6rem",
                     },
-                    '.MuiInputBase-input.MuiOutlinedInput-input': {
-                      borderRadius: '0.6rem',
-                      p: '7px 0 7px 15px',
+                    ".MuiInputBase-input.MuiOutlinedInput-input": {
+                      borderRadius: "0.6rem",
+                      p: "7px 0 7px 15px",
                     },
                   }}
                   InputProps={{
@@ -321,19 +333,19 @@ const PatientList = () => {
                   }}
                 />
               </Box>
-              <Box sx={{ display: 'flex', gap: 2 }}>
-                <Box sx={{ width: '50%' }}>
+              <Box sx={{ display: "flex", gap: 2 }}>
+                <Box sx={{ width: "50%" }}>
                   <Autocomplete
                     id="status-select"
                     sx={{
-                      width: '100%',
-                      '.MuiInputBase-root.MuiOutlinedInput-root': {
-                        borderRadius: '0.6rem',
+                      width: "100%",
+                      ".MuiInputBase-root.MuiOutlinedInput-root": {
+                        borderRadius: "0.6rem",
                       },
-                      '.MuiInputBase-input.MuiOutlinedInput-input.MuiAutocomplete-input':
+                      ".MuiInputBase-input.MuiOutlinedInput-input.MuiAutocomplete-input":
                         {
-                          p: '0 5px',
-                          fontSize: '0.8rem',
+                          p: "0 5px",
+                          fontSize: "0.8rem",
                         },
                     }}
                     value={selectedStatus}
@@ -350,18 +362,18 @@ const PatientList = () => {
                     )}
                   />
                 </Box>
-                <Box sx={{ width: '50%' }}>
+                <Box sx={{ width: "50%" }}>
                   <Autocomplete
                     id="breed-select"
                     sx={{
-                      width: '100%',
-                      '.MuiInputBase-root.MuiOutlinedInput-root': {
-                        borderRadius: '0.6rem',
+                      width: "100%",
+                      ".MuiInputBase-root.MuiOutlinedInput-root": {
+                        borderRadius: "0.6rem",
                       },
-                      '.MuiInputBase-input.MuiOutlinedInput-input.MuiAutocomplete-input':
+                      ".MuiInputBase-input.MuiOutlinedInput-input.MuiAutocomplete-input":
                         {
-                          p: '0 5px',
-                          fontSize: '0.8rem',
+                          p: "0 5px",
+                          fontSize: "0.8rem",
                         },
                     }}
                     value={selectedBreed}
@@ -373,7 +385,7 @@ const PatientList = () => {
                         component="li"
                         {...props}
                         key={option.key}
-                        sx={{ fontSize: '0.8rem' }}>
+                        sx={{ fontSize: "0.8rem" }}>
                         {option.value}
                       </Box>
                     )}
@@ -392,31 +404,31 @@ const PatientList = () => {
             xs={12}
             sm={6}
             sx={{
-              display: 'flex',
-              justifyContent: { xs: 'flex-start', sm: 'flex-end' },
+              display: "flex",
+              justifyContent: { xs: "flex-start", sm: "flex-end" },
             }}>
-            <Stack sx={{ width: '200px' }} spacing={2}>
-              <Box sx={{ border: '1px solid white' }}>
+            <Stack sx={{ width: "200px" }} spacing={2}>
+              <Box sx={{ border: "1px solid white" }}>
                 <AddPatientBtn onClick={handleAddPatient}>
                   Add new patient
                 </AddPatientBtn>
               </Box>
-              <Box sx={{ border: '1px solid white' }}></Box>
+              <Box sx={{ border: "1px solid white" }}></Box>
             </Stack>
           </Grid>
         </Grid>
       </Box>
 
       {/* Data Table */}
-      <div style={{ height: 365, width: '100%' }}>
+      <div style={{ height: 365, width: "100%" }}>
         {patientLoading ? (
           <Box
             sx={{
-              width: '100%',
-              height: '100%',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
             }}>
             <CircularProgress color="primary" />
           </Box>
@@ -435,38 +447,38 @@ const PatientList = () => {
             checkboxSelection
             sx={{
               borderRadius: 0,
-              border: 'none',
-              borderTop: '1px solid #e0e0e0',
-              '.MuiCheckbox-root .MuiSvgIcon-fontSizeMedium.css-i4bv87-MuiSvgIcon-root':
+              border: "none",
+              borderTop: "1px solid #e0e0e0",
+              ".MuiCheckbox-root .MuiSvgIcon-fontSizeMedium.css-i4bv87-MuiSvgIcon-root":
                 {
-                  fontSize: '1.2rem',
+                  fontSize: "1.2rem",
                 },
-              '.MuiDataGrid-columnSeparator.MuiDataGrid-columnSeparator--sideRight':
+              ".MuiDataGrid-columnSeparator.MuiDataGrid-columnSeparator--sideRight":
                 {
-                  color: 'transparent',
+                  color: "transparent",
                 },
-              '.MuiDataGrid-cell:focus,.MuiDataGrid-columnHeader:focus,.MuiDataGrid-cell:focus-within,.MuiDataGrid-columnHeader:focus-within':
+              ".MuiDataGrid-cell:focus,.MuiDataGrid-columnHeader:focus,.MuiDataGrid-cell:focus-within,.MuiDataGrid-columnHeader:focus-within":
                 {
-                  outline: 'none',
+                  outline: "none",
                 },
-              '.MuiDataGrid-columnHeaderTitleContainer': {
+              ".MuiDataGrid-columnHeaderTitleContainer": {
                 color: (theme) => theme.palette.primary.main,
               },
-              '.MuiDataGrid-cellContent': {
-                fontSize: '0.8rem',
+              ".MuiDataGrid-cellContent": {
+                fontSize: "0.8rem",
               },
-              '.MuiSelect-select.MuiTablePagination-select': {
+              ".MuiSelect-select.MuiTablePagination-select": {
                 background: (theme) => theme.palette.primary.main,
-                borderRadius: '0.5rem',
-                color: '#fff',
+                borderRadius: "0.5rem",
+                color: "#fff",
               },
-              '.MuiTablePagination-selectLabel': {
-                fontSize: '13px',
+              ".MuiTablePagination-selectLabel": {
+                fontSize: "13px",
               },
-              '.MuiTablePagination-selectIcon': {
-                color: '#fff',
+              ".MuiTablePagination-selectIcon": {
+                color: "#fff",
               },
-              '.MuiIconButton-root': {
+              ".MuiIconButton-root": {
                 color: (theme) => theme.palette.primary.main,
               },
             }}
@@ -478,11 +490,11 @@ const PatientList = () => {
         <CommonDialog
           open={openDialog}
           handleClose={() => setOpenDialog(false)}
-          title={modalType === 'add' ? 'Add New Patient' : 'Update Patient'}
+          title={modalType === "add" ? "Add New Patient" : "Update Patient"}
           content={
-            modalType === 'add'
-              ? 'Enter new patient information below'
-              : 'Enter update patient information below'
+            modalType === "add"
+              ? "Enter new patient information below"
+              : "Enter update patient information below"
           }>
           <CommonPatientForm
             onClose={() => setOpenDialog(false)}

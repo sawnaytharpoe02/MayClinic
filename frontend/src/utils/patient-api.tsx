@@ -1,12 +1,12 @@
 import api from './axiosInstance';
-import { IPatient } from '@/utils/interface';
+import { IPatientProps } from '@/utils/interface';
 
 export const patientUrlEndPoint = '/patients';
 
-export const getPatients = async () => {
-  const res = await api.get(patientUrlEndPoint);
-  return res.data;
-};
+// export const getPatients = async () => {
+//   const res = await api.get(patientUrlEndPoint);
+//   return res.data;
+// };
 
 export const getPatient = async (id: string) => {
   const response = await api.get(`${patientUrlEndPoint}/${id}`);
@@ -24,7 +24,7 @@ export const addPatient = async ({
   address,
   city,
   township,
-}: IPatient) => {
+}: IPatientProps) => {
   const response = await api.post(patientUrlEndPoint, {
     petName,
     status,
@@ -40,7 +40,7 @@ export const addPatient = async ({
   return response.data;
 };
 
-export const updatePatient = async (id: string, patient: IPatient) => {
+export const updatePatient = async (id: string, patient: IPatientProps) => {
   const response = await api.put(`${patientUrlEndPoint}/${id}`, patient);
   return response.data;
 };
