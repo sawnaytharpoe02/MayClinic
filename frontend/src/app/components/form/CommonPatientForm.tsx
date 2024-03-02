@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import React, { useEffect } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import React, { useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
 import {
   PatientSchemaType,
   patientSchema,
-} from '@/lib/validations/patientSchema';
-import { zodResolver } from '@hookform/resolvers/zod';
+} from "@/lib/validations/patientSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Grid,
   TextField,
@@ -20,14 +20,16 @@ import {
   FormControlLabel,
   Box,
   Typography,
-} from '@mui/material';
-import { DatePicker } from '@mui/x-date-pickers';
-import dayjs from 'dayjs';
-import { cities, status, townships, breeds } from './options';
-import CommonFormBtn from '../button/CommonFormBtn';
-import { IPatientProps, IPatientResProps } from '@/utils/interface';
-import { addPatient, updatePatient } from '@/utils/patient-api';
-import { toast } from 'react-toastify';
+  Input,
+  OutlinedInput,
+} from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
+import { cities, status, townships, breeds } from "./options";
+import CommonFormBtn from "../button/CommonFormBtn";
+import { IPatientProps, IPatientResProps } from "@/utils/interface";
+import { addPatient, updatePatient } from "@/utils/patient-api";
+import { toast } from "react-toastify";
 
 const CommonPatientForm = ({
   onClose,
@@ -47,16 +49,16 @@ const CommonPatientForm = ({
     formState: { errors },
   } = useForm({
     defaultValues: {
-      petName: '',
-      status: '',
-      gender: '',
-      pawrent: '',
-      breed: '',
+      petName: "",
+      status: "",
+      gender: "",
+      pawrent: "",
+      breed: "",
       dob: null,
-      phone: '',
-      address: '',
-      city: '',
-      township: '',
+      phone: "",
+      address: "",
+      city: "",
+      township: "",
     },
     resolver: zodResolver(patientSchema),
   });
@@ -69,7 +71,7 @@ const CommonPatientForm = ({
         gender: data.gender,
         pawrent: data.pawrent,
         breed: data.breed,
-        dob: data.dob ? dayjs(data.dob).format('DD-MM-YYYY') : null,
+        dob: data.dob ? dayjs(data.dob).format("DD-MM-YYYY") : null,
         phone: data.phone,
         address: data.address,
         city: data.city,
@@ -79,7 +81,7 @@ const CommonPatientForm = ({
       if (selectedData && selectedData._id) {
         const res = await updatePatient(selectedData._id, { ...payload });
         handleMutationProcess(res.data);
-        toast.success('Patient is successfully updated!', {
+        toast.success("Patient is successfully updated!", {
           icon: () => (
             <img
               src="/resources/success.png"
@@ -92,7 +94,7 @@ const CommonPatientForm = ({
       } else {
         const res = await addPatient(payload);
         handleMutationProcess(res.data);
-        toast.success('Patient is successfully created!', {
+        toast.success("Patient is successfully created!", {
           icon: () => (
             <img
               src="/resources/success.png"
@@ -111,20 +113,20 @@ const CommonPatientForm = ({
   };
 
   useEffect(() => {
-    if (modalType === 'edit' && selectedData) {
+    if (modalType === "edit" && selectedData) {
       reset({
-        petName: selectedData?.petName || '',
-        status: selectedData?.status || '',
-        gender: selectedData?.gender || '',
-        pawrent: selectedData?.pawrent || '',
-        breed: selectedData?.breed || '',
+        petName: selectedData?.petName || "",
+        status: selectedData?.status || "",
+        gender: selectedData?.gender || "",
+        pawrent: selectedData?.pawrent || "",
+        breed: selectedData?.breed || "",
         dob: selectedData?.dob
-          ? dayjs(selectedData?.dob, 'DD-MM-YYYY').toDate()
+          ? dayjs(selectedData?.dob, "DD-MM-YYYY").toDate()
           : null,
-        phone: selectedData?.phone || '',
-        address: selectedData?.address || '',
-        city: selectedData?.city || '',
-        township: selectedData?.township || '',
+        phone: selectedData?.phone || "",
+        address: selectedData?.address || "",
+        city: selectedData?.city || "",
+        township: selectedData?.township || "",
       } as { [key: string]: string | null });
     }
   }, [selectedData, modalType]);
@@ -136,7 +138,7 @@ const CommonPatientForm = ({
           <Grid item xs={12} md={6}>
             <FormLabel
               htmlFor="petName"
-              sx={{ color: '#000', fontWeight: 400 }}>
+              sx={{ color: "#000", fontWeight: 400 }}>
               Pet Name
             </FormLabel>
             <Controller
@@ -157,7 +159,7 @@ const CommonPatientForm = ({
           <Grid item xs={12} md={6}>
             <FormLabel
               htmlFor="pawrent"
-              sx={{ color: '#000', fontWeight: 400 }}>
+              sx={{ color: "#000", fontWeight: 400 }}>
               Status
             </FormLabel>
             <Controller
@@ -169,7 +171,7 @@ const CommonPatientForm = ({
                     id="status"
                     labelId="status"
                     {...field}
-                    value={field.value || ''}>
+                    value={field.value || ""}>
                     {status.map((status) => (
                       <MenuItem
                         key={`${status.id}_${status.key}`}
@@ -189,7 +191,7 @@ const CommonPatientForm = ({
           <Grid item xs={12} md={6}>
             <FormLabel
               htmlFor="pawrent"
-              sx={{ color: '#000', fontWeight: 400 }}>
+              sx={{ color: "#000", fontWeight: 400 }}>
               Pawrent
             </FormLabel>
             <Controller
@@ -208,7 +210,7 @@ const CommonPatientForm = ({
           </Grid>
 
           <Grid item xs={12} md={6}>
-            <FormLabel htmlFor="breed" sx={{ color: '#000', fontWeight: 400 }}>
+            <FormLabel htmlFor="breed" sx={{ color: "#000", fontWeight: 400 }}>
               Breed
             </FormLabel>
             <Controller
@@ -220,7 +222,7 @@ const CommonPatientForm = ({
                     id="breed"
                     labelId="breed"
                     {...field}
-                    value={field.value || ''}>
+                    value={field.value || ""}>
                     {breeds.map((breed) => (
                       <MenuItem
                         key={`${breed.id}_${breed.key}`}
@@ -238,7 +240,7 @@ const CommonPatientForm = ({
           </Grid>
 
           <Grid item xs={12} md={6}>
-            <FormLabel htmlFor="gender" sx={{ color: '#000', fontWeight: 400 }}>
+            <FormLabel htmlFor="gender" sx={{ color: "#000", fontWeight: 400 }}>
               Gender
             </FormLabel>
             <Controller
@@ -267,8 +269,8 @@ const CommonPatientForm = ({
           </Grid>
 
           <Grid item xs={12} md={6}>
-            <FormLabel htmlFor="dob" sx={{ color: '#000', fontWeight: 400 }}>
-              Date of Birth <span style={{ color: '#aaa' }}>(optional)</span>
+            <FormLabel htmlFor="dob" sx={{ color: "#000", fontWeight: 400 }}>
+              Date of Birth <span style={{ color: "#aaa" }}>(optional)</span>
             </FormLabel>
             <Controller
               name="dob"
@@ -294,7 +296,7 @@ const CommonPatientForm = ({
           </Grid>
 
           <Grid item xs={12} md={6}>
-            <FormLabel htmlFor="phone" sx={{ color: '#000', fontWeight: 400 }}>
+            <FormLabel htmlFor="phone" sx={{ color: "#000", fontWeight: 400 }}>
               Contact Phone No
             </FormLabel>
             <Controller
@@ -315,7 +317,7 @@ const CommonPatientForm = ({
           <Grid item xs={12} md={6}>
             <FormLabel
               htmlFor="address"
-              sx={{ color: '#000', fontWeight: 400 }}>
+              sx={{ color: "#000", fontWeight: 400 }}>
               Address
             </FormLabel>
             <Controller
@@ -334,7 +336,7 @@ const CommonPatientForm = ({
           </Grid>
 
           <Grid item xs={12} md={6}>
-            <FormLabel htmlFor="city" sx={{ color: '#000', fontWeight: 400 }}>
+            <FormLabel htmlFor="city" sx={{ color: "#000", fontWeight: 400 }}>
               City
             </FormLabel>
             <Controller
@@ -346,7 +348,7 @@ const CommonPatientForm = ({
                     id="city"
                     labelId="city"
                     {...field}
-                    value={field.value || ''}>
+                    value={field.value || ""}>
                     {cities.map((city) => (
                       <MenuItem key={`${city.id}_${city.key}`} value={city.key}>
                         {city.value}
@@ -364,7 +366,7 @@ const CommonPatientForm = ({
           <Grid item xs={12} md={6}>
             <FormLabel
               htmlFor="township"
-              sx={{ color: '#000', fontWeight: 400 }}>
+              sx={{ color: "#000", fontWeight: 400 }}>
               Township
             </FormLabel>
             <Controller
@@ -376,7 +378,7 @@ const CommonPatientForm = ({
                     id="township"
                     labelId="township"
                     {...field}
-                    value={field.value || ''}>
+                    value={field.value || ""}>
                     {townships.map((township) => (
                       <MenuItem
                         key={`${township.id}_${township.key}`}
@@ -395,13 +397,13 @@ const CommonPatientForm = ({
         </>
       </Grid>
 
-      <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
+      <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
         <CommonFormBtn
           variant="contained"
           type="submit"
-          color={modalType !== 'edit' ? 'primary' : 'secondary'}>
+          color={modalType !== "edit" ? "primary" : "secondary"}>
           <Typography color="#fff">
-            {modalType !== 'edit' ? 'Save' : 'Update'}
+            {modalType !== "edit" ? "Save" : "Update"}
           </Typography>
         </CommonFormBtn>
         <CommonFormBtn variant="outlined" onClick={onClose}>
